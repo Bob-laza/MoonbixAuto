@@ -1,5 +1,24 @@
 import sys
 import time
+import socks
+import socket
+
+
+# Function to read the proxy from a file
+def read_proxy_from_file(file_path):
+    with open(file_path, 'r') as file:
+        proxy_line = file.readline().strip()  # Read the first line
+    user_pass, ip_port = proxy_line.split('@')
+    user, password = user_pass.split(':')
+    ip, port = ip_port.split(':')
+    return user, password, ip, int(port)
+
+# Read proxy from file
+user, password, ip, port = read_proxy_from_file('proxy.txt')
+
+# Set up SOCKS5 proxy
+socks.set_default_proxy(socks.SOCKS5, ip, port, True, user, password)
+socket.socket = socks.socksocket
 
 sys.dont_write_bytecode = True
 
